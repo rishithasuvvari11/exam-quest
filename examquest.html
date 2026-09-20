@@ -1,0 +1,3091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EXAM QUEST | 350 Level Competitive Exam Game</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --navy:#172554;
+  --blue:#2563eb;
+  --light:#eef3f9;
+  --white:#fff;
+  --text:#172033;
+  --muted:#64748b;
+  --green:#16a34a;
+  --red:#dc2626;
+  --gold:#f59e0b;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--light);
+  color:var(--text);
+  min-height:100vh;
+}
+
+button{
+  font-family:inherit;
+}
+
+header{
+  background:var(--navy);
+  color:white;
+  padding:13px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:50;
+  box-shadow:0 3px 15px #0003;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:900;
+}
+
+.logo span{
+  color:#38bdf8;
+}
+
+.headerStats{
+  display:flex;
+  gap:15px;
+  font-size:14px;
+  font-weight:bold;
+}
+
+main{
+  width:min(1150px,94%);
+  margin:auto;
+  padding:25px 0 50px;
+}
+
+.screen{display:none}
+.screen.active{display:block}
+
+.hero{
+  background:linear-gradient(135deg,#172554,#2563eb);
+  color:white;
+  text-align:center;
+  border-radius:28px;
+  padding:50px 20px;
+  box-shadow:0 15px 35px #2563eb40;
+}
+
+.heroIcon{
+  font-size:70px;
+}
+
+.hero h1{
+  font-size:clamp(40px,8vw,70px);
+  margin:10px 0;
+}
+
+.hero p{
+  font-size:18px;
+  margin-bottom:25px;
+}
+
+.primary,
+.secondary,
+.back,
+.modeButton{
+  border:0;
+  cursor:pointer;
+  font-weight:bold;
+  border-radius:12px;
+}
+
+.primary{
+  background:#facc15;
+  padding:14px 27px;
+  color:#172033;
+  font-size:16px;
+}
+
+.secondary{
+  background:#e2e8f0;
+  padding:13px 25px;
+}
+
+.back{
+  background:transparent;
+  color:var(--blue);
+  font-size:16px;
+  padding:5px 0;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin:25px 0;
+}
+
+.stat{
+  background:white;
+  padding:20px;
+  text-align:center;
+  border-radius:17px;
+  box-shadow:0 5px 18px #0000000b;
+}
+
+.statIcon{
+  font-size:28px;
+}
+
+.stat h3{
+  font-size:25px;
+  margin-top:5px;
+}
+
+.stat p{
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.menu{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+.menu button{
+  background:white;
+  border:2px solid #e2e8f0;
+  border-radius:15px;
+  padding:20px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.menu button:hover{
+  border-color:var(--blue);
+  transform:translateY(-2px);
+}
+
+h2{
+  font-size:30px;
+  margin:15px 0 5px;
+}
+
+.subtitle{
+  color:var(--muted);
+  margin-bottom:22px;
+}
+
+/* LEVEL MAP */
+
+.levelHeader{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.topicFilter{
+  padding:11px;
+  border-radius:10px;
+  border:1px solid #cbd5e1;
+  background:white;
+}
+
+.levelMap{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+}
+
+.levelCard{
+  min-height:125px;
+  background:white;
+  border:2px solid #e2e8f0;
+  border-radius:16px;
+  padding:13px;
+  cursor:pointer;
+  position:relative;
+  transition:.2s;
+  box-shadow:0 4px 15px #00000009;
+}
+
+.levelCard:hover:not(.locked){
+  transform:translateY(-4px);
+  border-color:var(--blue);
+}
+
+.levelCard.locked{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.levelCard.completed{
+  border-color:#22c55e;
+}
+
+.levelCard.boss{
+  border-color:#f59e0b;
+  background:#fffbeb;
+}
+
+.levelNumber{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.levelIcon{
+  font-size:27px;
+  margin:7px 0;
+}
+
+.levelTitle{
+  font-weight:bold;
+  font-size:14px;
+}
+
+.levelStars{
+  margin-top:8px;
+  letter-spacing:1px;
+}
+
+.levelXP{
+  font-size:11px;
+  color:var(--blue);
+  margin-top:4px;
+}
+
+/* QUIZ */
+
+.quizTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+
+.quizInfo{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.pill{
+  background:white;
+  padding:9px 13px;
+  border-radius:10px;
+  font-weight:bold;
+}
+
+.timer{
+  color:#dc2626;
+}
+
+.progress{
+  height:10px;
+  background:#dbe3ed;
+  border-radius:20px;
+  overflow:hidden;
+  margin:18px 0;
+}
+
+.progressBar{
+  height:100%;
+  width:0;
+  background:var(--blue);
+  transition:.3s;
+}
+
+.questionCard{
+  background:white;
+  border-radius:22px;
+  padding:30px;
+  box-shadow:0 8px 25px #0000000d;
+}
+
+.questionMeta{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:var(--blue);
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.question{
+  font-size:24px;
+  line-height:1.5;
+  margin-bottom:24px;
+}
+
+.options{
+  display:grid;
+  gap:12px;
+}
+
+.option{
+  border:2px solid #e2e8f0;
+  background:#f8fafc;
+  padding:16px;
+  border-radius:12px;
+  text-align:left;
+  cursor:pointer;
+  font-size:16px;
+  transition:.2s;
+}
+
+.option:hover{
+  border-color:var(--blue);
+  background:#eff6ff;
+}
+
+.option.correct{
+  background:#dcfce7;
+  border-color:#22c55e;
+}
+
+.option.wrong{
+  background:#fee2e2;
+  border-color:#ef4444;
+}
+
+.option.disabled{
+  pointer-events:none;
+}
+
+.quizActions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:18px;
+  gap:10px;
+}
+
+.hintButton{
+  background:#fef3c7;
+  color:#92400e;
+  border:0;
+  padding:11px 17px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.hintBox{
+  display:none;
+  background:#fff7ed;
+  border-left:4px solid #f59e0b;
+  padding:13px;
+  border-radius:8px;
+  margin-top:15px;
+}
+
+.hintBox.show{
+  display:block;
+}
+
+.explanation{
+  display:none;
+  background:#eff6ff;
+  border-left:4px solid var(--blue);
+  padding:15px;
+  border-radius:9px;
+  margin-top:15px;
+}
+
+.explanation.show{
+  display:block;
+}
+
+.quizFooter{
+  text-align:center;
+  color:var(--muted);
+  padding:15px;
+}
+
+/* RESULT */
+
+.result{
+  max-width:680px;
+  margin:auto;
+  background:white;
+  padding:40px 25px;
+  text-align:center;
+  border-radius:25px;
+  box-shadow:0 10px 35px #0000000d;
+}
+
+.resultIcon{
+  font-size:65px;
+}
+
+.scoreCircle{
+  width:170px;
+  height:170px;
+  background:var(--navy);
+  color:white;
+  border-radius:50%;
+  margin:25px auto;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
+.scoreCircle strong{
+  font-size:48px;
+}
+
+.resultGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin:20px 0;
+}
+
+.resultGrid div{
+  background:#f8fafc;
+  padding:15px 5px;
+  border-radius:12px;
+}
+
+.resultGrid strong,
+.resultGrid span{
+  display:block;
+}
+
+.resultGrid strong{
+  font-size:22px;
+}
+
+.resultGrid span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.resultButtons{
+  display:grid;
+  gap:10px;
+}
+
+.resultStars{
+  font-size:30px;
+  margin:10px;
+}
+
+.xpReward{
+  background:#fef3c7;
+  padding:14px;
+  border-radius:10px;
+  font-weight:bold;
+  margin-bottom:18px;
+}
+
+/* OTHER PAGES */
+
+.cards{
+  display:grid;
+  gap:15px;
+}
+
+.mistake{
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  border-left:5px solid var(--red);
+}
+
+.mistake p{
+  margin-top:8px;
+}
+
+.achievements{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.achievement{
+  background:white;
+  border-radius:15px;
+  padding:20px;
+  display:flex;
+  gap:15px;
+  align-items:center;
+}
+
+.achievement.locked{
+  opacity:.4;
+}
+
+.achievementIcon{
+  font-size:35px;
+}
+
+.leaderboard{
+  max-width:700px;
+  margin:auto;
+  display:grid;
+  gap:10px;
+}
+
+.rank{
+  background:white;
+  padding:18px;
+  border-radius:12px;
+  display:grid;
+  grid-template-columns:50px 1fr auto;
+  align-items:center;
+}
+
+.rank.you{
+  background:#dbeafe;
+  border:2px solid var(--blue);
+}
+
+.profile{
+  max-width:650px;
+  margin:auto;
+  background:white;
+  padding:40px;
+  border-radius:25px;
+  text-align:center;
+}
+
+.avatar{
+  font-size:70px;
+}
+
+.levelBadge{
+  display:inline-block;
+  background:var(--navy);
+  color:white;
+  padding:8px 20px;
+  border-radius:20px;
+  margin:15px;
+}
+
+.xpTrack{
+  height:12px;
+  background:#e2e8f0;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.xpProgress{
+  width:0;
+  height:100%;
+  background:var(--blue);
+}
+
+.profileStats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:25px;
+}
+
+.profileStats div{
+  background:#f8fafc;
+  padding:15px;
+  border-radius:10px;
+}
+
+.profileStats strong,
+.profileStats span{
+  display:block;
+}
+
+footer{
+  text-align:center;
+  color:var(--muted);
+  padding:25px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:850px){
+
+  .levelMap{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .menu{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:600px){
+
+  .logo{
+    font-size:18px;
+  }
+
+  .headerStats{
+    font-size:11px;
+    gap:7px;
+  }
+
+  .levelMap{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .menu{
+    grid-template-columns:1fr;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .questionCard{
+    padding:20px;
+  }
+
+  .question{
+    font-size:20px;
+  }
+
+  .resultGrid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .achievements{
+    grid-template-columns:1fr;
+  }
+
+  .profile{
+    padding:25px 15px;
+  }
+}
+
+@media(max-width:380px){
+
+  .levelMap{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  .levelCard{
+    min-height:115px;
+    padding:9px;
+  }
+
+}
+</style>
+</head>
+
+
+<body>
+
+<header>
+
+  <div class="logo">
+    🎯 EXAM <span>QUEST</span>
+  </div>
+
+  <div class="headerStats">
+    ⭐ <span id="headerXP">0</span> XP
+    🔥 <span id="headerStreak">0</span>
+    🏆 Lv.<span id="headerLevel">1</span>
+  </div>
+
+</header>
+
+
+<main>
+
+
+<!-- =====================================================
+     HOME
+===================================================== -->
+
+<section id="home" class="screen active">
+
+  <div class="hero">
+
+    <div class="heroIcon">🎓</div>
+
+    <h1>EXAM QUEST</h1>
+
+    <p>
+      350 Levels • Every Topic • Learn • Practice • Compete
+    </p>
+
+    <button class="primary" onclick="show('map')">
+      🚀 START QUEST
+    </button>
+
+  </div>
+
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="statIcon">⭐</div>
+      <h3 id="homeXP">0</h3>
+      <p>Total XP</p>
+    </div>
+
+    <div class="stat">
+      <div class="statIcon">🔥</div>
+      <h3 id="homeStreak">0</h3>
+      <p>Best Streak</p>
+    </div>
+
+    <div class="stat">
+      <div class="statIcon">🎯</div>
+      <h3 id="homeAccuracy">0%</h3>
+      <p>Accuracy</p>
+    </div>
+
+    <div class="stat">
+      <div class="statIcon">📚</div>
+      <h3 id="homeQuestions">0</h3>
+      <p>Questions</p>
+    </div>
+
+  </div>
+
+
+  <div class="menu">
+
+    <button onclick="show('map')">
+      🗺️ Level Map
+    </button>
+
+    <button onclick="quickBattle()">
+      ⚡ Quick Battle
+    </button>
+
+    <button onclick="showMistakes()">
+      ❌ Mistake Book
+    </button>
+
+    <button onclick="showAchievements()">
+      🏆 Achievements
+    </button>
+
+    <button onclick="showLeaderboard()">
+      👑 Leaderboard
+    </button>
+
+    <button onclick="showProfile()">
+      👤 Profile
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     LEVEL MAP
+===================================================== -->
+
+<section id="map" class="screen">
+
+  <div class="levelHeader">
+
+    <div>
+      <button class="back" onclick="show('home')">
+        ← Home
+      </button>
+
+      <h2>🗺️ Quest Map</h2>
+
+      <p class="subtitle">
+        Complete levels to unlock the next challenge.
+      </p>
+    </div>
+
+    <select id="topicFilter"
+            class="topicFilter"
+            onchange="renderMap()">
+
+      <option value="all">All Topics</option>
+
+      <option value="Quantitative Aptitude">
+        Quantitative Aptitude
+      </option>
+
+      <option value="Reasoning">
+        Reasoning
+      </option>
+
+      <option value="English">
+        English
+      </option>
+
+      <option value="General Science">
+        General Science
+      </option>
+
+      <option value="GK & Awareness">
+        GK & Awareness
+      </option>
+
+      <option value="Computer">
+        Computer
+      </option>
+
+      <option value="Electrical & Technical">
+        Electrical & Technical
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <div id="levelMap" class="levelMap"></div>
+
+</section>
+
+
+<!-- =====================================================
+     QUIZ
+===================================================== -->
+
+<section id="quiz" class="screen">
+
+  <div class="quizTop">
+
+    <button class="back" onclick="exitQuiz()">
+      ✕ Exit
+    </button>
+
+    <div class="quizInfo">
+
+      <div class="pill">
+        Level <span id="quizLevel">1</span>
+      </div>
+
+      <div class="pill">
+        Q <span id="questionNo">1</span>/<span id="totalQuestions">10</span>
+      </div>
+
+      <div class="pill timer">
+        ⏱️ <span id="timer">30</span>s
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="progress">
+    <div id="progressBar" class="progressBar"></div>
+  </div>
+
+
+  <div class="questionCard">
+
+    <div class="questionMeta">
+
+      <span id="questionTopic">
+        QUANTITATIVE APTITUDE
+      </span>
+
+      <span id="questionDifficulty">
+        EASY
+      </span>
+
+    </div>
+
+
+    <div id="question" class="question">
+      Question
+    </div>
+
+
+    <div id="options" class="options"></div>
+
+
+    <div class="quizActions">
+
+      <button class="hintButton"
+              onclick="showHint()">
+        💡 Hint
+      </button>
+
+      <span>
+        ⭐ +10 &nbsp; | &nbsp; ❌ −2
+      </span>
+
+    </div>
+
+
+    <div id="hintBox" class="hintBox"></div>
+
+    <div id="explanation"
+         class="explanation"></div>
+
+  </div>
+
+
+  <div class="quizFooter">
+    Answer carefully. Speed + Accuracy = Higher Score!
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     RESULT
+===================================================== -->
+
+<section id="result" class="screen">
+
+  <div class="result">
+
+    <div class="resultIcon">🏆</div>
+
+    <h1 id="resultTitle">
+      Level Complete!
+    </h1>
+
+    <p id="resultMessage">
+      Great work!
+    </p>
+
+
+    <div class="resultStars"
+         id="resultStars">
+      ☆☆☆
+    </div>
+
+
+    <div class="scoreCircle">
+
+      <strong id="finalScore">
+        0
+      </strong>
+
+      <small>POINTS</small>
+
+    </div>
+
+
+    <div class="resultGrid">
+
+      <div>
+        <strong id="resultCorrect">0</strong>
+        <span>Correct</span>
+      </div>
+
+      <div>
+        <strong id="resultWrong">0</strong>
+        <span>Wrong</span>
+      </div>
+
+      <div>
+        <strong id="resultSkipped">0</strong>
+        <span>Skipped</span>
+      </div>
+
+      <div>
+        <strong id="resultAccuracy">0%</strong>
+        <span>Accuracy</span>
+      </div>
+
+    </div>
+
+
+    <div class="xpReward">
+
+      ⭐ XP Earned:
+      <span id="earnedXP">0</span>
+
+    </div>
+
+
+    <div class="resultButtons">
+
+      <button class="primary"
+              onclick="show('map')">
+        🗺️ LEVEL MAP
+      </button>
+
+      <button class="secondary"
+              onclick="retryLevel()">
+        🔄 RETRY LEVEL
+      </button>
+
+      <button class="secondary"
+              onclick="show('home')">
+        🏠 HOME
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     MISTAKES
+===================================================== -->
+
+<section id="mistakesScreen" class="screen">
+
+  <button class="back" onclick="show('home')">
+    ← Home
+  </button>
+
+  <h2>❌ Mistake Book</h2>
+
+  <p class="subtitle">
+    Review the questions you got wrong.
+  </p>
+
+  <div id="mistakes" class="cards"></div>
+
+</section>
+
+
+<!-- =====================================================
+     ACHIEVEMENTS
+===================================================== -->
+
+<section id="achievementScreen" class="screen">
+
+  <button class="back" onclick="show('home')">
+    ← Home
+  </button>
+
+  <h2>🏆 Achievements</h2>
+
+  <p class="subtitle">
+    Complete challenges and unlock badges.
+  </p>
+
+  <div id="achievements" class="achievements"></div>
+
+</section>
+
+
+<!-- =====================================================
+     LEADERBOARD
+===================================================== -->
+
+<section id="leaderboardScreen" class="screen">
+
+  <button class="back" onclick="show('home')">
+    ← Home
+  </button>
+
+  <h2>👑 Leaderboard</h2>
+
+  <div class="leaderboard">
+
+    <div class="rank">
+      <span>🥇</span>
+      <strong>ExamMaster</strong>
+      <b>10,450 XP</b>
+    </div>
+
+    <div class="rank">
+      <span>🥈</span>
+      <strong>Rahul</strong>
+      <b>9,200 XP</b>
+    </div>
+
+    <div class="rank">
+      <span>🥉</span>
+      <strong>Priya</strong>
+      <b>8,760 XP</b>
+    </div>
+
+    <div class="rank">
+      <span>4</span>
+      <strong>Arjun</strong>
+      <b>7,980 XP</b>
+    </div>
+
+    <div class="rank">
+      <span>5</span>
+      <strong>Meera</strong>
+      <b>7,520 XP</b>
+    </div>
+
+    <div class="rank you">
+      <span>⭐</span>
+      <strong>You</strong>
+      <b id="leaderXP">0 XP</b>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     PROFILE
+===================================================== -->
+
+<section id="profileScreen" class="screen">
+
+  <button class="back" onclick="show('home')">
+    ← Home
+  </button>
+
+  <div class="profile">
+
+    <div class="avatar">🎓</div>
+
+    <h2>Exam Quest Player</h2>
+
+    <div class="levelBadge">
+      LEVEL <span id="profileLevel">1</span>
+    </div>
+
+    <div class="xpTrack">
+      <div id="xpProgress"
+           class="xpProgress"></div>
+    </div>
+
+    <p>
+      <span id="profileXP">0</span> XP
+    </p>
+
+
+    <div class="profileStats">
+
+      <div>
+        <strong id="profileQuestions">0</strong>
+        <span>Questions</span>
+      </div>
+
+      <div>
+        <strong id="profileCorrect">0</strong>
+        <span>Correct</span>
+      </div>
+
+      <div>
+        <strong id="profileAccuracy">0%</strong>
+        <span>Accuracy</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer>
+  🎯 EXAM QUEST • 350 LEVEL COMPETITIVE EXAM CHALLENGE
+</footer>
+
+
+<script>
+
+/* =========================================================
+   EXAM QUEST ENGINE
+========================================================= */
+
+
+/* =========================================================
+   PLAYER SAVE DATA
+========================================================= */
+
+let player =
+JSON.parse(localStorage.getItem("EXAM_QUEST_350")) || {
+
+  xp:0,
+
+  streak:0,
+
+  bestStreak:0,
+
+  questions:0,
+
+  correct:0,
+
+  mistakes:[],
+
+  completed:{},
+
+  achievements:[]
+
+};
+
+
+function savePlayer(){
+
+  localStorage.setItem(
+    "EXAM_QUEST_350",
+    JSON.stringify(player)
+  );
+
+}
+
+
+/* =========================================================
+   TOPIC STRUCTURE
+========================================================= */
+
+const topics=[
+
+  {
+    name:"Quantitative Aptitude",
+    icon:"🔢",
+    start:1,
+    end:50,
+    subjects:[
+      "Number System",
+      "Simplification",
+      "HCF & LCM",
+      "Percentage",
+      "Ratio & Proportion",
+      "Average",
+      "Profit & Loss",
+      "Simple Interest",
+      "Compound Interest",
+      "Time & Work",
+      "Pipes & Cisterns",
+      "Time Speed Distance",
+      "Algebra",
+      "Geometry",
+      "Mensuration",
+      "Probability",
+      "Data Interpretation"
+    ]
+  },
+
+  {
+    name:"Reasoning",
+    icon:"🧠",
+    start:51,
+    end:100,
+    subjects:[
+      "Analogy",
+      "Classification",
+      "Number Series",
+      "Alphabet Series",
+      "Coding Decoding",
+      "Blood Relations",
+      "Direction Test",
+      "Ranking",
+      "Syllogism",
+      "Venn Diagram",
+      "Clock",
+      "Calendar",
+      "Puzzle",
+      "Seating Arrangement",
+      "Statement Conclusion"
+    ]
+  },
+
+  {
+    name:"English",
+    icon:"📖",
+    start:101,
+    end:150,
+    subjects:[
+      "Parts of Speech",
+      "Tenses",
+      "Articles",
+      "Prepositions",
+      "Subject Verb Agreement",
+      "Vocabulary",
+      "Synonyms",
+      "Antonyms",
+      "Idioms",
+      "One Word Substitution",
+      "Error Detection",
+      "Sentence Improvement",
+      "Cloze Test",
+      "Reading Comprehension"
+    ]
+  },
+
+  {
+    name:"General Science",
+    icon:"🔬",
+    start:151,
+    end:200,
+    subjects:[
+      "Physics",
+      "Motion",
+      "Force",
+      "Work Energy Power",
+      "Heat",
+      "Light",
+      "Sound",
+      "Electricity",
+      "Chemistry",
+      "Atoms",
+      "Acids Bases",
+      "Metals",
+      "Biology",
+      "Human Body",
+      "Plants",
+      "Environment"
+    ]
+  },
+
+  {
+    name:"GK & Awareness",
+    icon:"🌎",
+    start:201,
+    end:250,
+    subjects:[
+      "Indian History",
+      "Ancient India",
+      "Medieval India",
+      "Modern India",
+      "Indian Geography",
+      "World Geography",
+      "Indian Polity",
+      "Constitution",
+      "Economy",
+      "Culture",
+      "Sports",
+      "Awards",
+      "Important Days",
+      "World GK",
+      "Static GK"
+    ]
+  },
+
+  {
+    name:"Computer",
+    icon:"💻",
+    start:251,
+    end:275,
+    subjects:[
+      "Computer Basics",
+      "Hardware",
+      "Software",
+      "Operating Systems",
+      "MS Word",
+      "MS Excel",
+      "MS PowerPoint",
+      "Internet",
+      "Networking",
+      "DBMS",
+      "Cyber Security",
+      "Programming Basics"
+    ]
+  },
+
+  {
+    name:"Electrical & Technical",
+    icon:"⚡",
+    start:276,
+    end:325,
+    subjects:[
+      "Basic Electrical",
+      "Circuit Theory",
+      "Network Theorems",
+      "AC Fundamentals",
+      "Magnetic Circuits",
+      "Electrical Machines",
+      "Transformers",
+      "DC Machines",
+      "Induction Motors",
+      "Synchronous Machines",
+      "Power Systems",
+      "Transmission",
+      "Protection",
+      "Measurements",
+      "Power Electronics",
+      "Control Systems",
+      "Digital Electronics",
+      "Analog Electronics"
+    ]
+  },
+
+  {
+    name:"Mixed Challenge",
+    icon:"🏆",
+    start:326,
+    end:350,
+    subjects:[
+      "Mixed Practice",
+      "Speed Challenge",
+      "Hard Challenge",
+      "Expert Challenge",
+      "Grand Challenge",
+      "Final Boss"
+    ]
+  }
+
+];
+
+
+/* =========================================================
+   LEVEL DATA
+========================================================= */
+
+let levels=[];
+
+for(let n=1;n<=350;n++){
+
+  let topic=
+    topics.find(
+      t=>n>=t.start && n<=t.end
+    );
+
+  let relative=
+    n-topic.start;
+
+  let subject=
+    topic.subjects[
+      relative % topic.subjects.length
+    ];
+
+  let difficulty=
+    n%50<=10
+      ?"EASY"
+      :n%50<=25
+      ?"MEDIUM"
+      :n%50<=40
+      ?"HARD"
+      :"EXPERT";
+
+  if(n%10===0){
+    difficulty="BOSS";
+  }
+
+  levels.push({
+
+    id:n,
+
+    topic:topic.name,
+
+    icon:topic.icon,
+
+    subject:subject,
+
+    difficulty:difficulty,
+
+    xp:50+(n*2),
+
+    questions:10
+
+  });
+
+}
+
+
+/* =========================================================
+   QUESTION DATABASE
+========================================================= */
+
+const questions={};
+
+
+/* ---------- CURATED QUESTIONS ---------- */
+
+function add(topic,arr){
+
+  questions[topic]=arr;
+
+}
+
+
+add("Quantitative Aptitude",[
+
+ {
+  q:"What is 25% of 240?",
+  o:["40","50","60","80"],
+  a:2,
+  h:"One quarter of 240.",
+  e:"25% = 25/100 = 1/4. Therefore 240 ÷ 4 = 60."
+ },
+
+ {
+  q:"If 5x = 45, what is x?",
+  o:["5","7","9","11"],
+  a:2,
+  h:"Divide both sides by 5.",
+  e:"x = 45 ÷ 5 = 9."
+ },
+
+ {
+  q:"What is the average of 10, 20 and 30?",
+  o:["15","20","25","30"],
+  a:1,
+  h:"Add the three numbers and divide by 3.",
+  e:"(10 + 20 + 30) / 3 = 60/3 = 20."
+ },
+
+ {
+  q:"A number increased by 20% becomes 120. What was the original number?",
+  o:["90","100","110","115"],
+  a:1,
+  h:"120 represents 120% of the original.",
+  e:"Original = 120/1.20 = 100."
+ },
+
+ {
+  q:"What is 15 × 8?",
+  o:["100","110","120","130"],
+  a:2,
+  h:"Multiply 15 by 8.",
+  e:"15 × 8 = 120."
+ },
+
+ {
+  q:"What is the HCF of 12 and 18?",
+  o:["3","6","9","12"],
+  a:1,
+  h:"List the common factors.",
+  e:"Factors common to 12 and 18 include 1, 2, 3 and 6. Highest is 6."
+ },
+
+ {
+  q:"What is the LCM of 4 and 6?",
+  o:["8","10","12","24"],
+  a:2,
+  h:"Find the smallest common multiple.",
+  e:"Multiples of 4 and 6 first meet at 12."
+ },
+
+ {
+  q:"An item costs ₹500 and is sold for ₹600. What is the profit percentage?",
+  o:["10%","15%","20%","25%"],
+  a:2,
+  h:"Profit = selling price − cost price.",
+  e:"Profit = 100. Profit% = 100/500 × 100 = 20%."
+ },
+
+ {
+  q:"What is 3/4 of 100?",
+  o:["25","50","75","80"],
+  a:2,
+  h:"Multiply 100 by 3 and divide by 4.",
+  e:"100 × 3/4 = 75."
+ },
+
+ {
+  q:"What is the square of 15?",
+  o:["125","200","225","250"],
+  a:2,
+  h:"15 × 15.",
+  e:"15 × 15 = 225."
+
+ }
+
+]);
+
+
+add("Reasoning",[
+
+ {
+  q:"Find the next number: 2, 4, 8, 16, ?",
+  o:["20","24","32","36"],
+  a:2,
+  h:"Each term is multiplied by the same number.",
+  e:"Each number is multiplied by 2. Therefore 16 × 2 = 32."
+ },
+
+ {
+  q:"Find the odd one out.",
+  o:["Apple","Mango","Potato","Banana"],
+  a:2,
+  h:"Three are fruits.",
+  e:"Potato is a vegetable; the others are fruits."
+ },
+
+ {
+  q:"If CAT is coded as DBU, how is DOG coded?",
+  o:["EPH","EOH","DPH","EPG"],
+  a:0,
+  h:"Each letter moves one position forward.",
+  e:"D→E, O→P, G→H, giving EPH."
+ },
+
+ {
+  q:"Complete: 5, 10, 15, 20, ?",
+  o:["22","24","25","30"],
+  a:2,
+  h:"Look at the difference between consecutive numbers.",
+  e:"The sequence increases by 5. Answer = 25."
+ },
+
+ {
+  q:"Book is related to Reading. Food is related to:",
+  o:["Cooking","Sleeping","Running","Driving"],
+  a:0,
+  h:"Think about the normal activity associated with food.",
+  e:"Book → Reading; Food → Cooking."
+ },
+
+ {
+  q:"Find the next number: 1, 4, 9, 16, ?",
+  o:["20","24","25","30"],
+  a:2,
+  h:"These are squares.",
+  e:"1², 2², 3², 4², so next is 5² = 25."
+ },
+
+ {
+  q:"Which one is different?",
+  o:["Triangle","Square","Circle","Rectangle"],
+  a:2,
+  h:"Look at the number of sides.",
+  e:"A circle has no straight sides."
+ },
+
+ {
+  q:"Find the missing number: 3, 6, 12, 24, ?",
+  o:["36","42","48","50"],
+  a:2,
+  h:"Each term follows the same multiplication pattern.",
+  e:"Each term is multiplied by 2. 24 × 2 = 48."
+ }
+
+]);
+
+
+add("English",[
+
+ {
+  q:"Choose the correct spelling.",
+  o:["Recieve","Receive","Receeve","Receve"],
+  a:1,
+  h:"Remember the spelling rule: i before e except after c.",
+  e:"The correct spelling is Receive."
+ },
+
+ {
+  q:"Choose the synonym of Happy.",
+  o:["Sad","Angry","Joyful","Weak"],
+  a:2,
+  h:"Choose a word with a similar meaning.",
+  e:"Joyful means happy."
+ },
+
+ {
+  q:"Choose the antonym of Ancient.",
+  o:["Old","Modern","Historic","Past"],
+  a:1,
+  h:"Choose the opposite meaning.",
+  e:"Modern is the opposite of ancient."
+ },
+
+ {
+  q:"She ___ to school every day.",
+  o:["go","goes","going","gone"],
+  a:1,
+  h:"The subject is singular.",
+  e:"With 'she', the present simple verb is 'goes'."
+ },
+
+ {
+  q:"Choose the correct sentence.",
+  o:[
+   "He are a student.",
+   "He is a student.",
+   "He am a student.",
+   "He be student."
+  ],
+  a:1,
+  h:"Use the correct form of 'be'.",
+  e:"The correct sentence is 'He is a student.'"
+ },
+
+ {
+  q:"What is the plural of Child?",
+  o:["Childs","Childes","Children","Childrens"],
+  a:2,
+  h:"It is an irregular plural.",
+  e:"The plural of child is children."
+ }
+
+]);
+
+
+add("General Science",[
+
+ {
+  q:"What is the SI unit of force?",
+  o:["Joule","Newton","Watt","Pascal"],
+  a:1,
+  h:"Think of Newton's laws.",
+  e:"The SI unit of force is the newton (N)."
+ },
+
+ {
+  q:"Which planet is known as the Red Planet?",
+  o:["Earth","Mars","Jupiter","Venus"],
+  a:1,
+  h:"It is the fourth planet from the Sun.",
+  e:"Mars is commonly called the Red Planet."
+ },
+
+ {
+  q:"Which gas do plants absorb during photosynthesis?",
+  o:["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],
+  a:2,
+  h:"Plants use this gas to make food.",
+  e:"Plants absorb carbon dioxide during photosynthesis."
+ },
+
+ {
+  q:"What is the boiling point of water at sea level?",
+  o:["50°C","75°C","100°C","150°C"],
+  a:2,
+  h:"Think of the standard boiling point.",
+  e:"At standard atmospheric pressure, water boils at 100°C."
+ },
+
+ {
+  q:"Which organ pumps blood through the body?",
+  o:["Brain","Heart","Liver","Lung"],
+  a:1,
+  h:"It contracts rhythmically.",
+  e:"The heart pumps blood throughout the body."
+ },
+
+ {
+  q:"What is the chemical symbol for gold?",
+  o:["Ag","Au","Gd","Go"],
+  a:1,
+  h:"The symbol comes from the Latin name aurum.",
+  e:"Gold has the chemical symbol Au."
+ }
+
+]);
+
+
+add("GK & Awareness",[
+
+ {
+  q:"What is the capital of India?",
+  o:["Mumbai","New Delhi","Kolkata","Chennai"],
+  a:1,
+  h:"It is the seat of the Union Government.",
+  e:"New Delhi is the capital of India."
+ },
+
+ {
+  q:"Which is the largest ocean?",
+  o:["Atlantic Ocean","Indian Ocean","Pacific Ocean","Arctic Ocean"],
+  a:2,
+  h:"It covers the largest area.",
+  e:"The Pacific Ocean is the largest ocean."
+ },
+
+ {
+  q:"What is the national animal of India?",
+  o:["Lion","Tiger","Elephant","Peacock"],
+  a:1,
+  h:"It is a large striped wild cat.",
+  e:"The Bengal tiger is India's national animal."
+ },
+
+ {
+  q:"What is the national bird of India?",
+  o:["Sparrow","Eagle","Peacock","Parrot"],
+  a:2,
+  h:"It is famous for its colourful tail.",
+  e:"The Indian peafowl, commonly called the peacock, is India's national bird."
+ },
+
+ {
+  q:"Which is the largest continent?",
+  o:["Africa","Asia","Europe","Australia"],
+  a:1,
+  h:"It contains India and China.",
+  e:"Asia is the largest continent by area."
+ }
+
+]);
+
+
+add("Computer",[
+
+ {
+  q:"What does CPU stand for?",
+  o:[
+   "Central Processing Unit",
+   "Computer Personal Unit",
+   "Central Program Utility",
+   "Computer Processing Utility"
+  ],
+  a:0,
+  h:"It is often called the brain of a computer.",
+  e:"CPU stands for Central Processing Unit."
+ },
+
+ {
+  q:"Which device is used to type text?",
+  o:["Monitor","Keyboard","Speaker","Printer"],
+  a:1,
+  h:"It has alphabetic keys.",
+  e:"A keyboard is used to enter text."
+ },
+
+ {
+  q:"Which language is mainly used to style web pages?",
+  o:["HTML","CSS","Python","SQL"],
+  a:1,
+  h:"It controls presentation and layout.",
+  e:"CSS is used to style web pages."
+ },
+
+ {
+  q:"Which language adds interactivity to web pages?",
+  o:["CSS","HTML","JavaScript","XML"],
+  a:2,
+  h:"It is a scripting language commonly used in browsers.",
+  e:"JavaScript is used to add dynamic behaviour and interactivity."
+ },
+
+ {
+  q:"What does RAM stand for?",
+  o:[
+   "Random Access Memory",
+   "Read Access Machine",
+   "Rapid Application Memory",
+   "Random Application Module"
+  ],
+  a:0,
+  h:"It is a type of computer memory.",
+  e:"RAM stands for Random Access Memory."
+ }
+
+]);
+
+
+add("Electrical & Technical",[
+
+ {
+  q:"What is the SI unit of electrical resistance?",
+  o:["Volt","Ampere","Ohm","Watt"],
+  a:2,
+  h:"It is named after Georg Ohm.",
+  e:"Electrical resistance is measured in ohms (Ω)."
+ },
+
+ {
+  q:"What is the SI unit of electric current?",
+  o:["Volt","Ampere","Ohm","Watt"],
+  a:1,
+  h:"It is the unit represented by A.",
+  e:"Electric current is measured in amperes."
+ },
+
+ {
+  q:"Which law states V = IR?",
+  o:["Faraday's law","Ohm's law","Lenz's law","Kirchhoff's law"],
+  a:1,
+  h:"It relates voltage, current and resistance.",
+  e:"Ohm's law states V = IR."
+ },
+
+ {
+  q:"What is the unit of electrical power?",
+  o:["Joule","Watt","Ohm","Tesla"],
+  a:1,
+  h:"Power is commonly represented by P.",
+  e:"Electrical power is measured in watts."
+ },
+
+ {
+  q:"A transformer works on the principle of:",
+  o:[
+   "Electrolysis",
+   "Electromagnetic induction",
+   "Heating",
+   "Static electricity"
+  ],
+  a:1,
+  h:"A changing magnetic field induces voltage.",
+  e:"A transformer operates using mutual electromagnetic induction."
+ },
+
+ {
+  q:"Which device protects a circuit from excessive current?",
+  o:["Transformer","Fuse","Capacitor","Motor"],
+  a:1,
+  h:"It melts when current becomes excessive.",
+  e:"A fuse protects a circuit by interrupting excessive current."
+ }
+
+]);
+
+
+/* =========================================================
+   GENERIC QUESTION GENERATOR
+========================================================= */
+
+function generatedQuestions(topic,level){
+
+  let arr=[];
+
+  for(let i=0;i<10;i++){
+
+    let n=
+      level*3+i+1;
+
+    if(topic==="Quantitative Aptitude"){
+
+      let a=n+5;
+      let b=n+3;
+      let ans=a+b;
+
+      arr.push({
+        q:`What is ${a} + ${b}?`,
+        o:[
+          String(ans-2),
+          String(ans),
+          String(ans+2),
+          String(ans+5)
+        ],
+        a:1,
+        h:"Add the two numbers.",
+        e:`${a} + ${b} = ${ans}.`
+      });
+
+    }
+
+    else if(topic==="Reasoning"){
+
+      let start=(n%20)+2;
+      let answer=start*2;
+
+      arr.push({
+        q:`Find the next number: ${start}, ${start*2}, ${start*4}, ${start*8}, ?`,
+        o:[
+          String(answer*2-4),
+          String(answer*2),
+          String(answer*2+4),
+          String(answer*3)
+        ],
+        a:1,
+        h:"Each number is multiplied by 2.",
+        e:`The next term is ${start*16}.`
+      });
+
+    }
+
+    else if(topic==="English"){
+
+      let words=[
+        ["Big","Large"],
+        ["Small","Tiny"],
+        ["Fast","Quick"],
+        ["Begin","Start"],
+        ["Happy","Joyful"]
+      ];
+
+      let pair=words[i%words.length];
+
+      arr.push({
+        q:`Choose the synonym of "${pair[0]}".`,
+        o:[
+          pair[1],
+          "Angry",
+          "Weak",
+          "Late"
+        ],
+        a:0,
+        h:"Choose the word with a similar meaning.",
+        e:`"${pair[1]}" has a similar meaning to "${pair[0]}".`
+      });
+
+    }
+
+    else if(topic==="General Science"){
+
+      let science=[
+        ["SI unit of force","Newton","Joule","Watt","Volt"],
+        ["Red Planet","Mars","Venus","Earth","Mercury"],
+        ["Gas used in photosynthesis","Carbon dioxide","Oxygen","Hydrogen","Nitrogen"],
+        ["Organ that pumps blood","Heart","Liver","Brain","Kidney"],
+        ["Chemical symbol of gold","Au","Ag","Fe","Cu"]
+      ];
+
+      let x=science[i%science.length];
+
+      arr.push({
+        q:`What is the ${x[0]}?`,
+        o:[x[1],x[2],x[3],x[4]],
+        a:0,
+        h:"Think of the standard science fact.",
+        e:`The correct answer is ${x[1]}.`
+      });
+
+    }
+
+    else if(topic==="GK & Awareness"){
+
+      let gk=[
+        ["capital of India","New Delhi","Mumbai","Chennai","Kolkata"],
+        ["largest ocean","Pacific Ocean","Atlantic Ocean","Indian Ocean","Arctic Ocean"],
+        ["national animal of India","Tiger","Lion","Elephant","Deer"],
+        ["national bird of India","Peacock","Eagle","Sparrow","Parrot"],
+        ["largest continent","Asia","Africa","Europe","Australia"]
+      ];
+
+      let x=gk[i%gk.length];
+
+      arr.push({
+        q:`What is the ${x[0]}?`,
+        o:[x[1],x[2],x[3],x[4]],
+        a:0,
+        h:"Recall the standard GK fact.",
+        e:`The correct answer is ${x[1]}.`
+      });
+
+    }
+
+    else if(topic==="Computer"){
+
+      let computer=[
+        ["CPU","Central Processing Unit"],
+        ["RAM","Random Access Memory"],
+        ["URL","Uniform Resource Locator"],
+        ["CSS","Cascading Style Sheets"],
+        ["HTML","HyperText Markup Language"]
+      ];
+
+      let x=computer[i%computer.length];
+
+      arr.push({
+        q:`What does ${x[0]} stand for?`,
+        o:[
+          x[1],
+          "Computer Processing Language",
+          "Central Program Link",
+          "Random Program Memory"
+        ],
+        a:0,
+        h:"Think about common computer terminology.",
+        e:`${x[0]} stands for ${x[1]}.`
+      });
+
+    }
+
+    else{
+
+      let technical=[
+        ["unit of resistance","Ohm","Volt","Ampere","Watt"],
+        ["unit of current","Ampere","Volt","Ohm","Watt"],
+        ["unit of power","Watt","Joule","Ohm","Tesla"],
+        ["law V = IR","Ohm's law","Faraday's law","Lenz's law","Newton's law"],
+        ["transformer principle","Electromagnetic induction","Electrolysis","Heating","Friction"]
+      ];
+
+      let x=technical[i%technical.length];
+
+      arr.push({
+        q:`What is the ${x[0]}?`,
+        o:[x[1],x[2],x[3],x[4]],
+        a:0,
+        h:"Recall the basic electrical engineering concept.",
+        e:`The correct answer is ${x[1]}.`
+      });
+
+    }
+
+  }
+
+  return arr;
+
+}
+
+
+/* =========================================================
+   MAP RENDER
+========================================================= */
+
+function renderMap(){
+
+  let map=document.getElementById("levelMap");
+
+  let filter=
+    document.getElementById("topicFilter").value;
+
+  map.innerHTML="";
+
+  levels.forEach(level=>{
+
+    if(
+      filter!=="all" &&
+      level.topic!==filter
+    ){
+      return;
+    }
+
+    let previousCompleted=
+      level.id===1 ||
+      player.completed[level.id-1];
+
+    let completed=
+      player.completed[level.id];
+
+    let locked=!previousCompleted;
+
+    let card=
+      document.createElement("div");
+
+    card.className=
+      "levelCard"+
+      (locked?" locked":"")+
+      (completed?" completed":"")+
+      (level.difficulty==="BOSS"?" boss":"");
+
+    let stars=
+      completed
+      ? getStars(level.id)
+      : "☆☆☆";
+
+    card.innerHTML=`
+
+      <div class="levelNumber">
+        LEVEL ${level.id}
+      </div>
+
+      <div class="levelIcon">
+        ${level.icon}
+      </div>
+
+      <div class="levelTitle">
+        ${level.subject}
+      </div>
+
+      <div class="levelStars">
+        ${stars}
+      </div>
+
+      <div class="levelXP">
+        ⭐ ${level.xp} XP • ${level.difficulty}
+      </div>
+
+      ${
+        locked
+        ? "<div>🔒 Locked</div>"
+        : completed
+        ? "<div>✅ Completed</div>"
+        : "<div>▶ Play</div>"
+      }
+
+    `;
+
+    if(!locked){
+
+      card.onclick=
+        ()=>startLevel(level.id);
+
+    }
+
+    map.appendChild(card);
+
+  });
+
+}
+
+
+/* =========================================================
+   STARS
+========================================================= */
+
+function getStars(level){
+
+  let data=player.completed[level];
+
+  if(!data) return "☆☆☆";
+
+  if(data.accuracy>=90)
+    return "⭐⭐⭐";
+
+  if(data.accuracy>=70)
+    return "⭐⭐☆";
+
+  return "⭐☆☆";
+
+}
+
+
+/* =========================================================
+   START LEVEL
+========================================================= */
+
+let currentLevel=null;
+
+let currentQuestions=[];
+
+let questionIndex=0;
+
+let currentScore=0;
+
+let currentCorrect=0;
+
+let currentWrong=0;
+
+let currentSkipped=0;
+
+let currentTime=30;
+
+let timerID=null;
+
+let hintUsed=false;
+
+
+function startLevel(id){
+
+  currentLevel=
+    levels.find(x=>x.id===id);
+
+  if(!currentLevel) return;
+
+  currentQuestions=
+    getQuestionsForLevel(currentLevel);
+
+  shuffle(currentQuestions);
+
+  currentQuestions=
+    currentQuestions.slice(0,10);
+
+  questionIndex=0;
+
+  currentScore=0;
+
+  currentCorrect=0;
+
+  currentWrong=0;
+
+  currentSkipped=0;
+
+  hintUsed=false;
+
+  document.getElementById("quizLevel").textContent=
+    id;
+
+  document.getElementById("totalQuestions").textContent=
+    currentQuestions.length;
+
+  show("quiz");
+
+  loadQuestion();
+
+}
+
+
+/* =========================================================
+   QUESTION SELECTION
+========================================================= */
+
+function getQuestionsForLevel(level){
+
+  let base=
+    questions[level.topic] || [];
+
+  let result=[...base];
+
+  while(result.length<15){
+
+    result.push(
+      ...generatedQuestions(
+        level.topic,
+        level.id
+      )
+    );
+
+  }
+
+  shuffle(result);
+
+  return result.slice(0,15);
+
+}
+
+
+/* =========================================================
+   LOAD QUESTION
+========================================================= */
+
+function loadQuestion(){
+
+  clearInterval(timerID);
+
+  if(
+    questionIndex>=currentQuestions.length
+  ){
+
+    finishLevel();
+
+    return;
+
+  }
+
+  let q=
+    currentQuestions[questionIndex];
+
+  document.getElementById("questionNo").textContent=
+    questionIndex+1;
+
+  document.getElementById("question").textContent=
+    q.q;
+
+  document.getElementById("questionTopic").textContent=
+    currentLevel.topic.toUpperCase();
+
+  document.getElementById("questionDifficulty").textContent=
+    currentLevel.difficulty;
+
+  document.getElementById("hintBox").classList.remove("show");
+
+  document.getElementById("hintBox").textContent="";
+
+  document.getElementById("explanation").classList.remove("show");
+
+  document.getElementById("explanation").textContent="";
+
+  let options=
+    document.getElementById("options");
+
+  options.innerHTML="";
+
+  q.o.forEach((option,i)=>{
+
+    let button=
+      document.createElement("button");
+
+    button.className="option";
+
+    button.innerHTML=
+      `<b>${String.fromCharCode(65+i)}.</b> ${option}`;
+
+    button.onclick=
+      ()=>answerQuestion(i);
+
+    options.appendChild(button);
+
+  });
+
+  document.getElementById("progressBar").style.width=
+    (questionIndex/currentQuestions.length*100)+"%";
+
+  startTimer();
+
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function startTimer(){
+
+  currentTime=
+    currentLevel.difficulty==="BOSS"
+    ? 20
+    : currentLevel.difficulty==="EXPERT"
+    ? 25
+    : 30;
+
+  document.getElementById("timer").textContent=
+    currentTime;
+
+  timerID=
+    setInterval(()=>{
+
+      currentTime--;
+
+      document.getElementById("timer").textContent=
+        currentTime;
+
+      if(currentTime<=0){
+
+        clearInterval(timerID);
+
+        currentSkipped++;
+
+        player.questions++;
+
+        player.streak=0;
+
+        savePlayer();
+
+        questionIndex++;
+
+        loadQuestion();
+
+      }
+
+    },1000);
+
+}
+
+
+/* =========================================================
+   ANSWER
+========================================================= */
+
+function answerQuestion(selected){
+
+  clearInterval(timerID);
+
+  let q=
+    currentQuestions[questionIndex];
+
+  let buttons=
+    document.querySelectorAll(".option");
+
+  buttons.forEach(
+    b=>b.classList.add("disabled")
+  );
+
+  let explanation=
+    document.getElementById("explanation");
+
+  if(selected===q.a){
+
+    buttons[selected]
+      .classList.add("correct");
+
+    currentCorrect++;
+
+    currentScore+=10;
+
+    player.correct++;
+
+    player.questions++;
+
+    player.streak++;
+
+    if(
+      player.streak>
+      player.bestStreak
+    ){
+
+      player.bestStreak=
+        player.streak;
+
+    }
+
+  }else{
+
+    buttons[selected]
+      .classList.add("wrong");
+
+    buttons[q.a]
+      .classList.add("correct");
+
+    currentWrong++;
+
+    currentScore-=2;
+
+    player.questions++;
+
+    player.streak=0;
+
+    addMistake(q,selected);
+
+  }
+
+  explanation.innerHTML=
+    "<b>💡 Explanation:</b> "+
+    q.e;
+
+  explanation.classList.add("show");
+
+  savePlayer();
+
+  setTimeout(()=>{
+
+    questionIndex++;
+
+    loadQuestion();
+
+  },1000);
+
+}
+
+
+/* =========================================================
+   HINT
+========================================================= */
+
+function showHint(){
+
+  let q=
+    currentQuestions[questionIndex];
+
+  let box=
+    document.getElementById("hintBox");
+
+  box.textContent=
+    "💡 "+q.h;
+
+  box.classList.add("show");
+
+}
+
+
+/* =========================================================
+   MISTAKE BOOK
+========================================================= */
+
+function addMistake(q,selected){
+
+  let exists=
+    player.mistakes.some(
+      x=>x.q===q.q
+    );
+
+  if(!exists){
+
+    player.mistakes.push({
+
+      q:q.q,
+
+      selected:q.o[selected],
+
+      correct:q.o[q.a],
+
+      explanation:q.e
+
+    });
+
+  }
+
+}
+
+
+function showMistakes(){
+
+  show("mistakesScreen");
+
+  let box=
+    document.getElementById("mistakes");
+
+  if(player.mistakes.length===0){
+
+    box.innerHTML=`
+
+      <div class="mistake">
+
+        <h3>🎉 No mistakes!</h3>
+
+        <p>
+          Complete a level and incorrect answers
+          will appear here.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  box.innerHTML="";
+
+  player.mistakes.forEach((m,i)=>{
+
+    box.innerHTML+=`
+
+      <div class="mistake">
+
+        <h3>
+          ${i+1}. ${m.q}
+        </h3>
+
+        <p>
+          ❌ Your answer:
+          <b>${m.selected}</b>
+        </p>
+
+        <p>
+          ✅ Correct:
+          <b>${m.correct}</b>
+        </p>
+
+        <p>
+          💡 ${m.explanation}
+        </p>
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+
+/* =========================================================
+   FINISH LEVEL
+========================================================= */
+
+function finishLevel(){
+
+  clearInterval(timerID);
+
+  let accuracy=
+    Math.round(
+      currentCorrect/
+      currentQuestions.length*
+      100
+    );
+
+  let stars=
+    accuracy>=90
+    ?3
+    :accuracy>=70
+    ?2
+    :1;
+
+  let passed=
+    accuracy>=60;
+
+  let earnedXP=
+    passed
+    ?Math.max(10,currentScore)+
+     stars*10+
+     Math.floor(currentTime/5)
+    :Math.max(5,currentCorrect*2);
+
+  if(passed){
+
+    player.completed[currentLevel.id]={
+
+      accuracy:accuracy,
+
+      stars:stars,
+
+      score:Math.max(0,currentScore),
+
+      date:new Date().toISOString()
+
+    };
+
+    player.xp+=earnedXP;
+
+  }else{
+
+    player.xp+=earnedXP;
+
+  }
+
+  checkAchievements();
+
+  savePlayer();
+
+  document.getElementById("finalScore").textContent=
+    Math.max(0,currentScore);
+
+  document.getElementById("resultCorrect").textContent=
+    currentCorrect;
+
+  document.getElementById("resultWrong").textContent=
+    currentWrong;
+
+  document.getElementById("resultSkipped").textContent=
+    currentSkipped;
+
+  document.getElementById("resultAccuracy").textContent=
+    accuracy+"%";
+
+  document.getElementById("earnedXP").textContent=
+    earnedXP;
+
+  document.getElementById("resultStars").textContent=
+    "⭐".repeat(stars)+
+    "☆".repeat(3-stars);
+
+  document.getElementById("resultTitle").textContent=
+    passed
+    ?currentLevel.difficulty==="BOSS"
+      ?"🏆 BOSS DEFEATED!"
+      :"🎉 LEVEL COMPLETE!"
+    :"📚 LEVEL NOT CLEARED";
+
+  document.getElementById("resultMessage").textContent=
+    passed
+    ?accuracy>=90
+      ?"Outstanding performance! The next level is unlocked."
+      :"Good job! Keep improving your accuracy."
+    :"You need at least 60% to unlock the next level. Try again!";
+
+  show("result");
+
+}
+
+
+/* =========================================================
+   RETRY
+========================================================= */
+
+function retryLevel(){
+
+  if(currentLevel){
+
+    startLevel(currentLevel.id);
+
+  }
+
+}
+
+
+/* =========================================================
+   EXIT
+========================================================= */
+
+function exitQuiz(){
+
+  if(
+    confirm(
+      "Exit this level? Your current attempt will not be saved."
+    )
+  ){
+
+    clearInterval(timerID);
+
+    show("map");
+
+  }
+
+}
+
+
+/* =========================================================
+   QUICK BATTLE
+========================================================= */
+
+function quickBattle(){
+
+  let randomLevel=
+    levels[
+      Math.floor(
+        Math.random()*50
+      )
+    ];
+
+  startLevel(randomLevel.id);
+
+}
+
+
+/* =========================================================
+   ACHIEVEMENTS
+========================================================= */
+
+const achievementData=[
+
+ {
+  id:"first",
+  icon:"🎯",
+  title:"First Quest",
+  text:"Answer your first question.",
+  check:()=>player.questions>=1
+ },
+
+ {
+  id:"ten",
+  icon:"🔥",
+  title:"10 Streak",
+  text:"Reach a 10-question streak.",
+  check:()=>player.bestStreak>=10
+ },
+
+ {
+  id:"hundred",
+  icon:"💯",
+  title:"Century",
+  text:"Answer 100 questions.",
+  check:()=>player.questions>=100
+ },
+
+ {
+  id:"levels10",
+  icon:"🗺️",
+  title:"Level Explorer",
+  text:"Complete 10 levels.",
+  check:()=>Object.keys(player.completed).length>=10
+ },
+
+ {
+  id:"levels50",
+  icon:"🏆",
+  title:"Quest Warrior",
+  text:"Complete 50 levels.",
+  check:()=>Object.keys(player.completed).length>=50
+ },
+
+ {
+  id:"xp500",
+  icon:"⭐",
+  title:"XP Hunter",
+  text:"Earn 500 XP.",
+  check:()=>player.xp>=500
+ },
+
+ {
+  id:"xp5000",
+  icon:"👑",
+  title:"Exam Master",
+  text:"Earn 5000 XP.",
+  check:()=>player.xp>=5000
+ }
+
+];
+
+
+function checkAchievements(){
+
+  achievementData.forEach(a=>{
+
+    if(
+      a.check() &&
+      !player.achievements.includes(a.id)
+    ){
+
+      player.achievements.push(a.id);
+
+    }
+
+  });
+
+}
+
+
+function showAchievements(){
+
+  checkAchievements();
+
+  savePlayer();
+
+  show("achievementScreen");
+
+  let box=
+    document.getElementById("achievements");
+
+  box.innerHTML="";
+
+  achievementData.forEach(a=>{
+
+    let unlocked=
+      player.achievements.includes(a.id);
+
+    box.innerHTML+=`
+
+      <div class="achievement ${
+        unlocked?"":"locked"
+      }">
+
+        <div class="achievementIcon">
+          ${a.icon}
+        </div>
+
+        <div>
+
+          <h3>
+            ${a.title}
+            ${unlocked?" ✓":""}
+          </h3>
+
+          <p>
+            ${a.text}
+          </p>
+
+        </div>
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+
+/* =========================================================
+   LEADERBOARD
+========================================================= */
+
+function showLeaderboard(){
+
+  show("leaderboardScreen");
+
+  document.getElementById("leaderXP").textContent=
+    player.xp+" XP";
+
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function showProfile(){
+
+  show("profileScreen");
+
+  let level=
+    Math.floor(player.xp/100)+1;
+
+  let progress=
+    player.xp%100;
+
+  document.getElementById("profileLevel").textContent=
+    level;
+
+  document.getElementById("profileXP").textContent=
+    player.xp;
+
+  document.getElementById("xpProgress").style.width=
+    progress+"%";
+
+  document.getElementById("profileQuestions").textContent=
+    player.questions;
+
+  document.getElementById("profileCorrect").textContent=
+    player.correct;
+
+  let accuracy=
+    player.questions
+    ?Math.round(
+      player.correct/
+      player.questions*
+      100
+    )
+    :0;
+
+  document.getElementById("profileAccuracy").textContent=
+    accuracy+"%";
+
+}
+
+
+/* =========================================================
+   SCREEN
+========================================================= */
+
+function show(id){
+
+  document
+    .querySelectorAll(".screen")
+    .forEach(
+      s=>s.classList.remove("active")
+    );
+
+  document
+    .getElementById(id)
+    .classList.add("active");
+
+  updateUI();
+
+  if(id==="map"){
+    renderMap();
+  }
+
+  window.scrollTo(0,0);
+
+}
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+function updateUI(){
+
+  let level=
+    Math.floor(player.xp/100)+1;
+
+  document.getElementById("headerXP").textContent=
+    player.xp;
+
+  document.getElementById("headerStreak").textContent=
+    player.streak;
+
+  document.getElementById("headerLevel").textContent=
+    level;
+
+  document.getElementById("homeXP").textContent=
+    player.xp;
+
+  document.getElementById("homeStreak").textContent=
+    player.bestStreak;
+
+  document.getElementById("homeQuestions").textContent=
+    player.questions;
+
+  let accuracy=
+    player.questions
+    ?Math.round(
+      player.correct/
+      player.questions*
+      100
+    )
+    :0;
+
+  document.getElementById("homeAccuracy").textContent=
+    accuracy+"%";
+
+}
+
+
+/* =========================================================
+   SHUFFLE
+========================================================= */
+
+function shuffle(array){
+
+  for(
+    let i=array.length-1;
+    i>0;
+    i--
+  ){
+
+    let j=
+      Math.floor(
+        Math.random()*(i+1)
+      );
+
+    [
+      array[i],
+      array[j]
+    ]=[
+      array[j],
+      array[i]
+    ];
+
+  }
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+checkAchievements();
+
+savePlayer();
+
+updateUI();
+
+renderMap();
+
+</script>
+
+</body>
+</html>
